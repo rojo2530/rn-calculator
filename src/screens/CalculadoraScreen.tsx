@@ -14,7 +14,33 @@ export const CalculadoraScreen = () => {
   }
 
   const armarNumero = (textoNumero: string) => {
-    setNumero(numero + textoNumero);
+    if (numero.includes('.') && textoNumero === '.') {
+      return;
+    }
+
+    if (numero.startsWith('0') || numero.startsWith('-0')) {
+      if (textoNumero === '.') {
+        setNumero(numero + textoNumero);
+      } else if( textoNumero === '0' && numero.includes('.')) {
+        setNumero(numero + textoNumero);
+      } else if (textoNumero !== '0' && !numero.includes('.')) {
+        setNumero(textoNumero);
+      } else if (textoNumero === '0' && !numero.includes('.')) {
+        setNumero(numero);
+      } else {
+        setNumero(numero + textoNumero);
+      }
+    } else {
+      setNumero(numero + textoNumero);
+    }
+  }
+
+  const positivoNegativo = () => {
+    if (numero.includes('-')) {
+      setNumero(numero.replace('-', ''))
+    } else {
+      setNumero('-' + numero);
+    }
   }
 
   return (
@@ -23,32 +49,35 @@ export const CalculadoraScreen = () => {
       <Text style={styles.resultado}>{ numero }</Text>
       
       <View style={styles.fila}>
-        {/*Boton*/}
-        
         <BotonCalc texto="C" color="#9B9B9B" accion={ limpiar } />
-        <BotonCalc texto="+/-" color="#9B9B9B" accion={ limpiar }/>
+        <BotonCalc texto="+/-" color="#9B9B9B" accion={ positivoNegativo }/>
         <BotonCalc texto="del" color="#9B9B9B" accion={ limpiar }/>
         <BotonCalc texto="/" color="#FF9427" accion={ limpiar }/>
       </View>
+      
+      
       <View style={styles.fila}>
-        {/*Boton*/}
-        
         <BotonCalc texto="7" accion={ armarNumero }  />
         <BotonCalc texto="8" accion={ armarNumero } />
         <BotonCalc texto="9" accion={ armarNumero } />
         <BotonCalc texto="X" color="#FF9427" accion={ limpiar }/>
       </View>
+      
       <View style={styles.fila}>
-        {/*Boton*/}
-        
         <BotonCalc texto="4" accion={ armarNumero }  />
         <BotonCalc texto="5"  accion={ armarNumero } />
         <BotonCalc texto="6"  accion={ armarNumero } />
         <BotonCalc texto="-" color="#FF9427" accion={ limpiar } />
       </View>
+
       <View style={styles.fila}>
-        {/*Boton*/}
-        
+        <BotonCalc texto="1" accion={ armarNumero }  />
+        <BotonCalc texto="2"  accion={ armarNumero } />
+        <BotonCalc texto="3"  accion={ armarNumero } />
+        <BotonCalc texto="+" color="#FF9427" accion={ limpiar } />
+      </View>
+      
+      <View style={styles.fila}>
         <BotonCalc texto="0" ancho accion={ armarNumero } />
         <BotonCalc texto="." accion={ armarNumero } />
         <BotonCalc texto="=" color="#FF9427" accion={ limpiar }/>
