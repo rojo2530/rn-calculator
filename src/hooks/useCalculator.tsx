@@ -1,133 +1,131 @@
 import { useRef, useState } from "react";
 
-
-enum Operadores {
-  sumar, restar, multiplicar, dividir
+enum Operators {
+  sum, subtraction, multiply, divide
 }
 
 export const useCalculator = () => {
-  const [numero, setNumero] = useState('0');
-  const [numeroAnterior, setNumeroAnterior] = useState('0');
+  const [number, setNumber] = useState('0');
+  const [previousNumber, setPreviousNumber] = useState('0');
   //we use ref for saving last operation, not need reload ui
-  const ultimaOperacion = useRef<Operadores>();
+  const lastOperation = useRef<Operators>();
 
-  const limpiar = () => {
-    setNumero('0');
-    setNumeroAnterior('0');
+  const clean = () => {
+    setNumber('0');
+    setPreviousNumber('0');
   }
 
-  const armarNumero = (textoNumero: string) => {
-    if (numero.includes('.') && textoNumero === '.') {
+  const buildNumber = (textoNumero: string) => {
+    if (number.includes('.') && textoNumero === '.') {
       return;
     }
 
-    if (numero.startsWith('0') || numero.startsWith('-0')) {
+    if (number.startsWith('0') || number.startsWith('-0')) {
       if (textoNumero === '.') {
-        setNumero(numero + textoNumero);
-      } else if( textoNumero === '0' && numero.includes('.')) {
-        setNumero(numero + textoNumero);
-      } else if (textoNumero !== '0' && !numero.includes('.')) {
-        setNumero(textoNumero);
-      } else if (textoNumero === '0' && !numero.includes('.')) {
-        setNumero(numero);
+        setNumber(number + textoNumero);
+      } else if( textoNumero === '0' && number.includes('.')) {
+        setNumber(number + textoNumero);
+      } else if (textoNumero !== '0' && !number.includes('.')) {
+        setNumber(textoNumero);
+      } else if (textoNumero === '0' && !number.includes('.')) {
+        setNumber(number);
       } else {
-        setNumero(numero + textoNumero);
+        setNumber(number + textoNumero);
       }
     } else {
-      setNumero(numero + textoNumero);
+      setNumber(number + textoNumero);
     }
   }
 
-  const positivoNegativo = () => {
-    if (numero.includes('-')) {
-      setNumero(numero.replace('-', ''))
+  const positiveNegative = () => {
+    if (number.includes('-')) {
+      setNumber(number.replace('-', ''))
     } else {
-      setNumero('-' + numero);
+      setNumber('-' + number);
     }
   }
 
   const btnDelete = () => {
-    if (numero.length === 1) {
-      setNumero('0');
-    } else if (numero.length === 2 && numero.includes('-')) {
-      setNumero('0');
+    if (number.length === 1) {
+      setNumber('0');
+    } else if (number.length === 2 && number.includes('-')) {
+      setNumber('0');
     } else {
-      setNumero(numero.slice(0, -1)); 
+      setNumber(number.slice(0, -1)); 
     }
   }
 
-  const cambiarNumPorAnterior = () => {
-    if (numero.endsWith('.')) {
-      setNumeroAnterior(numero.slice(0,-1));
+  const changeNumberForPrevious = () => {
+    if (number.endsWith('.')) {
+      setPreviousNumber(number.slice(0,-1));
     } else {
-      setNumeroAnterior(numero);
+      setPreviousNumber(number);
     }
     
-    setNumero('0');
+    setNumber('0');
   }
 
-  const btnDividir = () => {
-    cambiarNumPorAnterior();
-    ultimaOperacion.current = Operadores.dividir;
+  const btnDivide = () => {
+    changeNumberForPrevious();
+    lastOperation.current = Operators.divide;
   }
 
-  const btnSumar = () => {
-    cambiarNumPorAnterior();
-    ultimaOperacion.current = Operadores.sumar;
+  const btnSum = () => {
+    changeNumberForPrevious();
+    lastOperation.current = Operators.sum;
   }
 
-  const btnRestar = () => {
-    cambiarNumPorAnterior();
-    ultimaOperacion.current = Operadores.restar;
+  const btnSubtraction = () => {
+    changeNumberForPrevious();
+    lastOperation.current = Operators.subtraction;
   }
 
-  const btnMultiplicar = () => {
-    cambiarNumPorAnterior();
-    ultimaOperacion.current = Operadores.multiplicar;
+  const btnMultiply = () => {
+    changeNumberForPrevious();
+    lastOperation.current = Operators.multiply;
   }
 
-  const calcular = () => {
-    const num1 = Number(numero);
-    const num2 = Number(numeroAnterior);
+  const calculate = () => {
+    const num1 = Number(number);
+    const num2 = Number(previousNumber);
 
-    if (numero === '0' && numeroAnterior === '0' && ultimaOperacion.current === Operadores.dividir) {
-      setNumero('0');
+    if (number === '0' && previousNumber === '0' && lastOperation.current === Operators.divide) {
+      setNumber('0');
       return;
     }
 
-    switch (ultimaOperacion.current) {
-      case Operadores.sumar:
-        setNumero(`${ num1 + num2 }`);
+    switch (lastOperation.current) {
+      case Operators.sum:
+        setNumber(`${ num1 + num2 }`);
         break;
     
-      case Operadores.restar:
-        setNumero(`${ num2 - num1 }`);
+      case Operators.subtraction:
+        setNumber(`${ num2 - num1 }`);
         break;
         
-      case Operadores.multiplicar:
-        setNumero(`${ num1 * num2 }`);
+      case Operators.multiply:
+        setNumber(`${ num1 * num2 }`);
         break;
       
-      case Operadores.dividir:
-        setNumero(`${ num2 / num1 }`);
+      case Operators.divide:
+        setNumber(`${ num2 / num1 }`);
         break;
     }
 
-    setNumeroAnterior('0');
+    setPreviousNumber('0');
   }
 
   return {
-    numeroAnterior,
-    numero,
-    limpiar,
-    positivoNegativo,
+    previousNumber,
+    number,
+    clean,
+    positiveNegative,
     btnDelete,
-    btnDividir,
-    btnRestar,
-    btnSumar,
-    btnMultiplicar,
-    armarNumero,
-    calcular,
-     
+    btnDivide,
+    btnSubtraction,
+    btnSum,
+    btnMultiply,
+    buildNumber,
+    calculate,
   }
 }
