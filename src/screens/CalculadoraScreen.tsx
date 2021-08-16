@@ -89,6 +89,36 @@ export const CalculadoraScreen = () => {
     ultimaOperacion.current = Operadores.multiplicar;
   }
 
+  const calcular = () => {
+    const num1 = Number(numero);
+    const num2 = Number(numeroAnterior);
+
+    if (numero === '0' && numeroAnterior === '0' && ultimaOperacion.current === Operadores.dividir) {
+      setNumero('0');
+      return;
+    }
+
+    switch (ultimaOperacion.current) {
+      case Operadores.sumar:
+        setNumero(`${ num1 + num2 }`);
+        break;
+    
+      case Operadores.restar:
+        setNumero(`${ num2 - num1 }`);
+        break;
+        
+      case Operadores.multiplicar:
+        setNumero(`${ num1 * num2 }`);
+        break;
+      
+      case Operadores.dividir:
+        setNumero(`${ num2 / num1 }`);
+        break;
+    }
+
+    setNumeroAnterior('0');
+  }
+
   return (
     <View style={styles.calculadorContainer}>
       {
@@ -135,7 +165,7 @@ export const CalculadoraScreen = () => {
       <View style={styles.fila}>
         <BotonCalc texto="0" ancho accion={ armarNumero } />
         <BotonCalc texto="." accion={ armarNumero } />
-        <BotonCalc texto="=" color="#FF9427" accion={ limpiar }/>
+        <BotonCalc texto="=" color="#FF9427" accion={ calcular }/>
       </View>
       
     </View>
